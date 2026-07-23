@@ -31,7 +31,7 @@ function TestimonialCard3D({ t, index }: { t: (typeof TESTIMONIALS)[0]; index: n
           {/* Stars */}
           <div className="flex gap-0.5 mb-4">
             {Array.from({ length: t.rating }).map((_, si) => (
-              <Star key={si} className="text-gold/70 fill-gold/70" size={12} strokeWidth={1.5} />
+              <Star key={si} className="text-orange fill-orange" size={12} strokeWidth={1.5} />
             ))}
           </div>
 
@@ -41,11 +41,11 @@ function TestimonialCard3D({ t, index }: { t: (typeof TESTIMONIALS)[0]; index: n
           </p>
 
           {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-white/[0.06] via-gold/20 to-white/[0.06] my-4" />
+          <div className="h-px bg-gradient-to-r from-white/[0.06] via-orange/20 to-white/[0.06] my-4" />
 
           {/* Author */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full border border-gold/20 overflow-hidden flex-shrink-0">
+            <div className="w-9 h-9 rounded-full border border-orange/20 overflow-hidden flex-shrink-0">
               <img src={bgImage} alt={t.name} className="w-full h-full object-cover opacity-60" loading="lazy" />
             </div>
             <div>
@@ -56,8 +56,8 @@ function TestimonialCard3D({ t, index }: { t: (typeof TESTIMONIALS)[0]; index: n
         </div>
 
         {/* Corner accents */}
-        <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-gold/10" />
-        <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-gold/10" />
+        <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-orange/10" />
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-orange/10" />
       </div>
     </motion.div>
   );
@@ -110,8 +110,16 @@ export default function TestimonialsSection() {
           className="relative z-10 flex items-center gap-3 px-6 md:px-12 lg:px-20 pt-12 md:pt-16"
         >
           <span className="font-mono text-[10px] tracking-[0.4em] text-white/10 uppercase">03</span>
-          <h2 className="heading-display text-lg md:text-xl text-gold-gradient leading-none">SESLER</h2>
+          <h2 className="heading-display text-lg md:text-xl text-orange-gradient leading-none">MÜŞTERİ YORUMLARI</h2>
           <div className="h-px flex-1 max-w-xs bg-gradient-to-r from-white/[0.06] to-transparent" />
+
+          {/* Google Rating Badge */}
+          <div className="glass-strong px-3 py-1.5 flex items-center gap-1.5 ml-2">
+            <Star className="text-orange fill-orange" size={11} />
+            <span className="font-sans text-[10px] text-white/50 font-medium">{BRAND.googleRating}</span>
+            <span className="font-sans text-[9px] text-white/20">•</span>
+            <span className="font-sans text-[9px] text-white/30">{BRAND.googleReviews} Yorum</span>
+          </div>
         </motion.div>
 
         {/* 3D Card Carousel */}
@@ -135,7 +143,7 @@ export default function TestimonialsSection() {
           transition={{ duration: 1, delay: 0.3 }}
           className="relative z-10 text-center mt-8 px-6"
         >
-          <p className="font-serif text-base md:text-lg text-gold-gradient/50 leading-snug">
+          <p className="font-serif text-base md:text-lg text-orange-gradient/50 leading-snug">
             &ldquo;Mükemmellik bir yetenek değil. Bir tutumdur.&rdquo;
           </p>
           <p className="font-sans text-[9px] tracking-[0.3em] text-white/12 uppercase mt-2">— Ralph Marston</p>

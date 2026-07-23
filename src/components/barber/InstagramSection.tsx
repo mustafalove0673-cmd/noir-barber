@@ -24,15 +24,12 @@ function InstaCard({ src, index }: { src: string; index: number }) {
         className="relative group overflow-hidden cursor-pointer"
         style={{ height: `${height}px` }}
       >
-        {/* Edge-to-edge image, no border, no padding */}
         <img
           src={src}
           alt={`${BRAND.name} Instagram ${index + 1}`}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           loading="lazy"
         />
-
-        {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-400 flex items-center justify-center">
           <Instagram className="text-white opacity-0 group-hover:opacity-80 transition-all duration-400 scale-75 group-hover:scale-100" size={24} strokeWidth={1.5} />
         </div>
@@ -47,14 +44,12 @@ export default function InstagramSection() {
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Edge-to-edge masonry — no padding, no borders */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-0 [&>*]:mb-px">
         {IMAGES.instagram.map((src, i) => (
           <InstaCard key={i} src={src} index={i} />
         ))}
       </div>
 
-      {/* Floating follow bar */}
       <motion.div
         ref={headerRef}
         initial={{ opacity: 0, y: 20 }}
@@ -62,18 +57,18 @@ export default function InstagramSection() {
         transition={{ duration: 0.6 }}
         className="relative z-10 flex items-center justify-center gap-4 py-8 bg-[#0a0a0a]"
       >
-        <div className="h-px flex-1 max-w-[100px] bg-gradient-to-r from-transparent to-white/10" />
-        <span className="font-sans text-[10px] tracking-[0.3em] text-white/20 uppercase">Follow</span>
+        <div className="h-px flex-1 max-w-[100px] bg-gradient-to-r from-transparent to-orange/20" />
+        <span className="font-sans text-[10px] tracking-[0.3em] text-white/20 uppercase">Takip Et</span>
         <a
           href={BRAND.instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-serif text-sm text-white/60 hover:text-gold transition-colors duration-300"
+          className="font-serif text-sm text-white/60 hover:text-orange transition-colors duration-300"
         >
           {BRAND.instagram}
         </a>
-        <Instagram size={13} strokeWidth={1.5} className="text-white/20" />
-        <div className="h-px flex-1 max-w-[100px] bg-gradient-to-l from-transparent to-white/10" />
+        <Instagram size={13} strokeWidth={1.5} className="text-orange/20" />
+        <div className="h-px flex-1 max-w-[100px] bg-gradient-to-l from-transparent to-orange/20" />
       </motion.div>
     </section>
   );

@@ -1,33 +1,45 @@
 ---
 Task ID: 1
-Agent: Main
-Task: Complete NOIR BARBER luxury website with all pages and push to GitHub
+Agent: Main Agent
+Task: Complete overhaul of Batuhan Taşcı barber website - colors, data, components, pages
 
 Work Log:
-- Analyzed existing project structure and all components
-- Updated data.ts with ALL_SERVICES (8), TESTIMONIALS (6), FAQS (8), BLOG_POSTS (4), extended NAV_LINKS, FOOTER_LINKS
-- Updated Navigation.tsx for multi-page routing (Link from next/link), full mobile menu
-- Updated page.tsx home page with proper section IDs, all sections
-- Fixed duplicate section ID conflicts (booking-cta vs contact)
-- Updated GallerySection.tsx: Pinterest-style CSS columns masonry
-- Updated TestimonialsSection.tsx: Horizontal scrolling carousel with auto-scroll
-- Updated InstagramSection.tsx: Compact polaroid-style masonry
-- Updated BookingCTA.tsx: Compact layout, exported MarqueeDivider
-- Updated Footer.tsx: Rich 4-column layout with social links, marquee, all footer links
-- Updated StickyButtons.tsx: WhatsApp, Call, Email buttons with tooltips
-- Created PageLayout.tsx: Shared layout wrapper for internal pages
-- Created About page: Brand story, philosophy cards, animated stats
-- Created Services page: Filter tabs, 8 services, alternating editorial layout
-- Created Reviews page: Horizontal carousel, 5-star rating summary
-- Created Contact page: Map, contact cards, form, WhatsApp CTAs
-- Created Blog page: Editorial journal layout, featured + grid posts
-- Created Cookies page: Full policy with table
-- Created 404 page: Animated barber pole, gold CTAs
-- Fixed all import errors (hi → hi2, escaped backticks)
-- Lint passed clean, dev server compiled successfully
-- Pushed to GitHub: https://github.com/mustafalove0673-cmd/noir-barber
+- Updated color scheme from gold (#c9a96e) to orange (#FF6B00) + red accents in globals.css
+- Updated data.ts with real business info: Batuhan Taşcı, +90 531 350 24 66, benbatuhantasci@icloud.com, Kartal/Istanbul
+- Added INSTAGRAM_REELS data with 6 reel embed URLs
+- Updated layout.tsx with Turkish metadata and lang="tr"
+- Copied logo to /public/logo.png
+- Rewrote Navigation.tsx: logo image, orange colors, Turkish labels
+- Rewrote HeroSection.tsx: BATUHAN TAŞCI heading, orange gradients, Turkish
+- Rewrote StickyButtons.tsx: orange phone button, Turkish tooltips
+- Rewrote ServicesSection.tsx: NEW alternating strip design with GSAP ScrollTrigger
+- Rewrote GallerySection.tsx: GSAP left/right→center entry animations
+- Rewrote TestimonialsSection.tsx: 3D rotating cards, Google rating badge
+- Rewrote ContactSection.tsx: ultra-minimal diagonal clip-path, video background
+- Rewrote BookingCTA.tsx: thinner design with dot pattern
+- Rewrote InstagramSection.tsx: Turkish "Takip Et", orange accents
+- Rewrote Footer.tsx: animated bg text, promo banner, logo with blur, orange
+- Created NEW ReelsSection.tsx: Instagram reels carousel with embedded iframes
+- Updated page.tsx: added ReelsSection to homepage
+- Created /videos page: dedicated reels showcase with stats
+- Created /experience page: 5-step parallax journey with side progress
+- Created /team page: Batuhan bio, skill bars, expertise cards, awards
+- Rewrote /gallery page: Turkish filters, orange active states, lightbox modal
+- Rewrote /pricing page: Turkish, ₺ prices, FAQ accordion
+- Rewrote /about, /services, /book, /blog, /faq, /reviews, /contact pages: all Turkish + orange
+- Rewrote /privacy, /cookies, /terms pages: Turkish legal text + orange
+- Added "Deneyim" and "Ekip" to NAV_LINKS and FOOTER_LINKS in data.ts
+- Lint passed clean
+- Dev server running on port 3000
 
 Stage Summary:
-- All 13+ pages created and compiling
-- Zero lint errors
-- GitHub repo live at: https://github.com/mustafalove0673-cmd/noir-barber
+- Complete color scheme change: gold → orange + red
+- Complete Turkish translation of entire site
+- Real business data for Batuhan Taşcı (Kartal, Istanbul)
+- 5 new premium pages created (videos, experience, team, plus gallery/pricing rewrites)
+- GSAP scroll animations on services and gallery
+- 3D testimonial card carousel
+- Instagram reels section with embedded videos
+- Video background in contact section
+- Animated footer with bg text flow and promo banner
+- All 15 pages (homepage + 14 internal) rewritten in Turkish

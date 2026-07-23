@@ -1,137 +1,196 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Clock } from 'lucide-react';
-import PageLayout from '@/components/barber/PageLayout';
-import { ALL_SERVICES, BRAND } from '@/components/barber/data';
+import { Clock, Phone, ChevronDown } from 'lucide-react';
+import SmoothScroll from '@/components/barber/SmoothScroll';
+import Navigation from '@/components/barber/Navigation';
+import Footer from '@/components/barber/Footer';
+import StickyButtons from '@/components/barber/StickyButtons';
+import { ALL_SERVICES, BRAND, FAQS } from '@/components/barber/data';
 
-const tiers = [
-  { name: 'Essential', price: '$55', description: 'Quick precision services for the modern gentleman on the go.', services: ['Beard Sculpture', 'Hair Tattoo'] },
-  { name: 'Premium', price: '$85', description: 'Our most popular tier \u2014 crafted cuts and indulgent shaves.', services: ['Signature Cut', 'The Executive'] },
-  { name: 'Signature', price: '$165', description: 'The ultimate NOIR experience. Transformation, redefined.', services: ["Gentleman's Ritual"] },
-];
+function usePriceCounter(target: number, inView: boolean) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    const start = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / 1200, 1);
+      setDisplay(Math.round((1 - Math.pow(1 - p, 3)) * target));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, inView]);
+  return display;
+}
 
-function WhatsAppLink({ children, message }: { children: React.ReactNode; message: string }) {
+function ServiceRow({ service, index }: { service: typeof ALL_SERVICES[0]; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  const price = usePriceCounter(Number(service.price), inView);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <a
-      href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(message)}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="btn-shine inline-flex items-center gap-2 bg-gold/10 border border-gold/30 text-gold px-4 py-2 text-[11px] tracking-[0.15em] uppercase hover:bg-gold/20 transition-all duration-300"
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: -30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.6, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative border-b border-white/[0.04] py-6 md:py-8 hover:bg-white/[0.01] transition-colors duration-500"
     >
-      {children}
-    </a>
+      {/* Popular Badge */}
+      {service.id === 4 && (
+        <div className="absolute -top-px right-6 bg-orange text-background text-[8px] tracking-[0.25em] uppercase font-bold px-3 py-1">
+          EN POPÜLER
+        </div>
+      )}
+
+      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 px-2">
+        {/* Left: Number + Title */}
+        <div className="flex items-center gap-4 md:w-1/2">
+          <span className="font-mono text-xl md:text-2xl text-orange/15 select-none w-10">{String(service.id).padStart(2, '0')}</span>
+          <div>
+            <h3 className="font-serif text-base md:text-lg text-white/70 group-hover:text-white/90 transition-colors">{service.title}</h3>
+            <p className="font-sans text-[11px] text-white/20 mt-0.5 tracking-wider uppercase">{service.subtitle}</p>
+          </div>
+        </div>
+
+        {/* Description (desktop) */}
+        <p className="hidden lg:block text-[11px] text-white/20 leading-relaxed flex-1 max-w-xs">{service.description}</p>
+
+        {/* Right: Price + Duration + Book */}
+        <div className="flex items-center gap-6 md:ml-auto">
+          <div className="text-right">
+            <span className="font-serif text-2xl md:text-3xl text-orange-gradient font-bold">₺{price}</span>
+            <div className="flex items-center gap-1 justify-end mt-0.5">
+              <Clock className="w-3 h-3 text-orange/30" />
+              <span className="font-mono text-[10px] text-white/15">{service.duration}</span>
+            </div>
+          </div>
+          <a
+            href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(`Merhaba Batuhan, ${service.title} hizmeti için randevu almak istiyorum.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 bg-orange/10 border border-orange/20 text-orange/60 px-4 py-2 text-[9px] tracking-[0.15em] uppercase hover:bg-orange/20 hover:text-orange transition-all btn-shine"
+          >
+            <Phone className="w-3 h-3" />
+            <span>Randevu</span>
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function FAQItem({ faq, index }: { faq: typeof FAQS[0]; index: number }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.06 }}
+      className="border-b border-white/[0.04]"
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between py-4 px-1 text-left group"
+      >
+        <span className="font-sans text-sm text-white/50 group-hover:text-white/70 transition-colors">{faq.q}</span>
+        <ChevronDown className={`w-4 h-4 text-orange/30 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <motion.div
+        initial={false}
+        animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="overflow-hidden"
+      >
+        <p className="pb-4 px-1 font-sans text-[12px] text-white/25 leading-relaxed">{faq.a}</p>
+      </motion.div>
+    </motion.div>
   );
 }
 
 export default function PricingPage() {
   return (
-    <PageLayout title="Pricing" subtitle="Transparent. Honest. Premium." number="03">
-      <section className="max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-20">
-        {/* Services List */}
-        <div className="space-y-4 md:space-y-6">
-          {ALL_SERVICES.map((service, i) => (
-            <motion.div
-              key={service.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="glass light-reflection rounded-lg p-5 md:p-6 relative group hover:border-gold/30 transition-all duration-500"
-            >
-              {/* Popular Ribbon */}
-              {service.id === 4 && (
-                <div className="absolute -top-px right-6 bg-gold text-background text-[9px] tracking-[0.2em] uppercase font-bold px-4 py-1.5 rounded-b-md">
-                  Most Popular
-                </div>
-              )}
-
-              <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                {/* Left: Number + Title */}
-                <div className="flex items-center gap-4 md:w-1/2">
-                  <span className="font-serif text-2xl md:text-3xl text-gold/20 select-none w-10">
-                    {String(service.id).padStart(2, '0')}
-                  </span>
-                  <div>
-                    <h3 className="heading-editorial text-lg md:text-xl text-foreground">{service.title}</h3>
-                    <p className="text-muted-foreground text-sm mt-1 leading-relaxed max-w-md">
-                      {service.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right: Price + Duration + Book */}
-                <div className="flex items-center gap-6 md:ml-auto">
-                  <div className="text-right">
-                    <span className="text-gold-gradient font-serif text-3xl md:text-4xl font-bold">
-                      ${service.price}
-                    </span>
-                    <div className="flex items-center gap-1.5 justify-end mt-1">
-                      <Clock className="w-3 h-3 text-gold/40" />
-                      <span className="text-[11px] tracking-wider text-muted-foreground uppercase">{service.duration}</span>
-                    </div>
-                  </div>
-                  <WhatsAppLink message={`Hi, I'd like to book the ${service.title}.`}>
-                    <Phone className="w-3.5 h-3.5" />
-                    Book Now
-                  </WhatsAppLink>
-                </div>
-              </div>
+    <SmoothScroll>
+      <Navigation />
+      <StickyButtons />
+      <main className="min-h-screen bg-[#0a0a0a] text-foreground overflow-x-hidden">
+        {/* Hero */}
+        <section className="relative pt-32 pb-12 md:pt-36 md:pb-16 px-6 md:px-12">
+          <div className="max-w-5xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <span className="font-mono text-[10px] tracking-[0.5em] text-orange/30 uppercase block mb-3">03</span>
+              <h1 className="heading-display text-[clamp(3rem,8vw,6rem)] text-orange-gradient mb-3">FİYATLAR</h1>
+              <p className="font-sans text-sm text-white/20 tracking-wider max-w-md">Şeffaf. Dürüst. Premium.</p>
             </motion.div>
-          ))}
-        </div>
-
-        {/* Quick Comparison Tiers */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-20 md:mt-28"
-        >
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px flex-1 bg-gradient-to-r from-gold/30 to-transparent" />
-            <h2 className="heading-editorial text-xl md:text-2xl text-gold/70">Quick Comparison</h2>
-            <div className="h-px flex-1 bg-gradient-to-l from-gold/30 to-transparent" />
           </div>
+        </section>
 
-          <div className="grid md:grid-cols-3 gap-4">
-            {tiers.map((tier, i) => (
-              <motion.div
-                key={tier.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.12 }}
-                className={`glass rounded-lg p-6 text-center ${i === 1 ? 'border-gold/30 shadow-gold' : ''}`}
-              >
-                <p className="text-[10px] tracking-[0.25em] uppercase text-gold/50 mb-3">{tier.name}</p>
-                <p className="text-gold-gradient font-serif text-4xl md:text-5xl font-bold mb-2">{tier.price}</p>
-                <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{tier.description}</p>
-                <div className="space-y-2">
-                  {tier.services.map((s) => (
-                    <p key={s} className="text-xs text-foreground/70">{s}</p>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
+        {/* Services List */}
+        <section className="px-6 md:px-12">
+          <div className="max-w-5xl mx-auto">
+            <div className="space-y-0">
+              {ALL_SERVICES.map((service, i) => (
+                <ServiceRow key={service.id} service={service} index={i} />
+              ))}
+            </div>
           </div>
-        </motion.div>
+        </section>
 
-        {/* WhatsApp CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-20 text-center"
-        >
-          <p className="text-muted-foreground text-sm mb-4">Not sure which service is right for you?</p>
-          <WhatsAppLink message="Hi, I'd like help choosing a service.">
-            Not Sure? Chat With Us
-          </WhatsAppLink>
-        </motion.div>
-      </section>
-    </PageLayout>
+        {/* FAQ */}
+        <section className="px-6 md:px-12 mt-20">
+          <div className="max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <span className="font-mono text-[10px] tracking-[0.4em] text-white/10 uppercase block mb-2">Sıkça Sorulanlar</span>
+              <h2 className="heading-display text-2xl md:text-3xl text-orange-gradient">SSS</h2>
+            </motion.div>
+            <div>
+              {FAQS.map((faq, i) => (
+                <FAQItem key={i} faq={faq} index={i} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-20 px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <p className="font-sans text-sm text-white/25 mb-4">Hangi hizmeti seçeceğinden emin değil misin?</p>
+            <a
+              href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Merhaba Batuhan, hangi hizmeti seçmem gerektiği hakkında yardım alabilir miyim?')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange text-background text-[10px] font-semibold tracking-[0.2em] uppercase btn-shine hover:shadow-orange transition-all"
+            >
+              <Phone className="w-3 h-3" />
+              Bizimle Konuş
+            </a>
+          </motion.div>
+        </section>
+
+        <Footer />
+      </main>
+    </SmoothScroll>
   );
 }

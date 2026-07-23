@@ -8,7 +8,7 @@ import { SERVICES, BRAND } from './data';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function usePriceCounter(target: number, inView: boolean, duration = 1000) {
+function usePriceCounter(target: number, inView: boolean, duration = 1200) {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     if (!inView) return;
@@ -26,187 +26,165 @@ function usePriceCounter(target: number, inView: boolean, duration = 1000) {
 }
 
 export default function ServicesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const strips = gsap.utils.toArray<HTMLElement>('.service-strip');
+    strips.forEach((strip, i) => {
+      const fromX = i % 2 === 0 ? -100 : 100;
+      gsap.fromTo(strip,
+        { x: fromX, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: strip,
+            start: 'top 85%',
+            end: 'top 40%',
+            scrub: 1,
+          },
+        }
+      );
+    });
+
+    const images = gsap.utils.toArray<HTMLElement>('.service-img');
+    images.forEach((img) => {
+      gsap.fromTo(img,
+        { scale: 1.3 },
+        {
+          scale: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: img,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        }
+      );
+    });
+
+    return () => ScrollTrigger.getAll().forEach(t => t.kill());
+  }, []);
+
   return (
-    <section id="services" className="relative overflow-hidden">
-      <ServiceFullBleed service={SERVICES[0]} index={0} />
-      <ServiceFullBleedReverse service={SERVICES[1]} index={1} />
-      <ServiceCinematic service={SERVICES[2]} index={2} />
-      <ServiceGiantBanner service={SERVICES[3]} index={3} />
+    <section id="services" ref={sectionRef} className="relative overflow-hidden">
+      {/* Section Header */}
+      <div className="px-6 md:px-12 lg:px-20 pt-20 pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <span className="font-mono text-[10px] tracking-[0.4em] text-white/10 uppercase block mb-3">01</span>
+          <h2 className="heading-display text-3xl md:text-4xl lg:text-5xl text-orange-gradient mb-2">HİZMETLERİMİZ</h2>
+          <p className="font-sans text-[11px] text-white/20 tracking-wider max-w-md">
+            Her hizmet, titizlikle hazırlanmış bir deneyimdir
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Service Strips */}
+      <div className="relative">
+        {SERVICES.map((service, i) => (
+          <ServiceStrip key={service.id} service={service} index={i} />
+        ))}
+      </div>
+
+      {/* Bottom CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="flex flex-col sm:flex-row items-center justify-center gap-4 px-6 md:px-12 lg:px-20 py-16"
+      >
+        <a
+          href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Merhaba Batuhan, randevu almak istiyorum.')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2.5 px-7 py-3 bg-orange text-background font-sans text-[10px] font-semibold tracking-[0.25em] uppercase btn-shine transition-all duration-300 hover:shadow-orange"
+        >
+          <span>WHATSAPP İLE RANDEVU AL</span>
+        </a>
+        <a
+          href="/pricing"
+          className="inline-flex items-center gap-2.5 px-7 py-3 border border-white/12 text-white/50 font-sans text-[10px] font-semibold tracking-[0.25em] uppercase transition-all duration-300 hover:text-orange hover:border-orange/30"
+        >
+          <span>TÜM FİYATLARI GÖR</span>
+        </a>
+      </motion.div>
     </section>
   );
 }
 
-/* Full-bleed image, text overlay bottom-left */
-function ServiceFullBleed({ service, index }: { service: typeof SERVICES[0]; index: number }) {
+function ServiceStrip({ service, index }: { service: typeof SERVICES[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
   const price = usePriceCounter(Number(service.price), isInView);
+  const isEven = index % 2 === 0;
 
   return (
-    <motion.div
-      ref={ref}
-      className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : {}}
-      transition={{ duration: 1 }}
-    >
-      <motion.img
-        src={service.image}
-        alt={service.title}
-        className="absolute inset-0 w-full h-full object-cover"
-        initial={{ scale: 1.2 }}
-        animate={isInView ? { scale: 1 } : {}}
-        transition={{ duration: 1.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+    <div ref={ref} className="service-strip relative w-full overflow-hidden border-t border-white/[0.04]">
+      <div className={`grid grid-cols-1 lg:grid-cols-2 min-h-[70vh] md:min-h-[80vh]`}>
+        {/* Image Side */}
+        <div className={`relative overflow-hidden order-1 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+          <img
+            src={service.image}
+            alt={service.title}
+            className="service-img absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-black/40" />
 
-      <div className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-12 md:px-16 md:pb-16 lg:px-24 lg:pb-20">
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={isInView ? { y: 0, opacity: 1 } : {}}
-          transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-lg"
-        >
-          <span className="font-mono text-[10px] tracking-[0.4em] text-white/15 uppercase block mb-3">0{index + 1}</span>
-          <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white/85 tracking-tight leading-tight mb-2">{service.title}</h3>
-          <p className="font-sans text-[11px] tracking-[0.2em] text-white/25 uppercase mb-4">{service.subtitle}</p>
-          <p className="font-sans text-xs text-white/35 leading-relaxed max-w-sm mb-6">{service.description}</p>
-          <div className="flex items-center gap-6">
-            <span className="font-serif text-2xl md:text-3xl text-gold-gradient">${price}</span>
-            <span className="font-sans text-[10px] tracking-[0.2em] text-white/20 border border-white/[0.06] px-3 py-1">{service.duration}</span>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* Full-bleed with text top-right */
-function ServiceFullBleedReverse({ service, index }: { service: typeof SERVICES[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const price = usePriceCounter(Number(service.price), isInView);
-
-  return (
-    <motion.div
-      ref={ref}
-      className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : {}}
-      transition={{ duration: 1 }}
-    >
-      <motion.img
-        src={service.image}
-        alt={service.title}
-        className="absolute inset-0 w-full h-full object-cover"
-        initial={{ scale: 1.2 }}
-        animate={isInView ? { scale: 1 } : {}}
-        transition={{ duration: 1.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/10" />
-      <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent" />
-
-      <div className="absolute top-0 right-0 left-0 z-10 px-6 pt-12 md:px-16 md:pt-16 lg:px-24 lg:pt-20">
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={isInView ? { y: 0, opacity: 1 } : {}}
-          transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-lg ml-auto text-right"
-        >
-          <span className="font-mono text-[10px] tracking-[0.4em] text-white/15 uppercase block mb-3">0{index + 1}</span>
-          <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white/85 tracking-tight leading-tight mb-2">{service.title}</h3>
-          <p className="font-sans text-[11px] tracking-[0.2em] text-white/25 uppercase mb-4">{service.subtitle}</p>
-          <p className="font-sans text-xs text-white/35 leading-relaxed max-w-sm ml-auto mb-6">{service.description}</p>
-          <div className="flex items-center justify-end gap-6">
-            <span className="font-sans text-[10px] tracking-[0.2em] text-white/20 border border-white/[0.06] px-3 py-1">{service.duration}</span>
-            <span className="font-serif text-2xl md:text-3xl text-gold-gradient">${price}</span>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* Cinematic 21:9 letterbox */
-function ServiceCinematic({ service, index }: { service: typeof SERVICES[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const price = usePriceCounter(Number(service.price), isInView);
-
-  return (
-    <motion.div ref={ref} className="relative w-full overflow-hidden" initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ duration: 1 }}>
-      <div className="relative mx-4 md:mx-12 lg:mx-20 my-8 md:my-12">
-        <div className="absolute top-0 left-0 right-0 h-[15%] bg-[#0a0a0a] z-10" />
-        <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-[#0a0a0a] z-10" />
-        <div className="relative aspect-[21/9] overflow-hidden">
-          <motion.img src={service.image} alt={service.title} className="absolute inset-0 w-full h-full object-cover"
-            initial={{ scale: 1.15 }} animate={isInView ? { scale: 1 } : {}} transition={{ duration: 1.6, ease: [0.25, 0.46, 0.45, 0.94] }} />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
-        </div>
-        <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
-          <motion.div initial={{ y: 30, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.8, delay: 0.4 }} className="text-center">
-            <span className="font-mono text-[10px] tracking-[0.4em] text-white/15 uppercase block mb-2">0{index + 1}</span>
-            <h3 className="font-serif text-2xl md:text-4xl lg:text-5xl text-white/85 tracking-tight mb-1">{service.title}</h3>
-            <p className="font-sans text-[10px] tracking-[0.25em] text-white/25 uppercase mb-3">{service.subtitle}</p>
-            <p className="font-sans text-[11px] text-white/30 leading-relaxed max-w-md mx-auto mb-5">{service.description}</p>
-            <div className="flex items-center justify-center gap-6">
-              <span className="font-serif text-xl md:text-2xl text-gold-gradient">${price}</span>
-              <div className="h-4 w-px bg-white/[0.06]" />
-              <span className="font-sans text-[10px] tracking-[0.2em] text-white/20">{service.duration}</span>
+          {/* Price badge on image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className={`absolute bottom-8 ${isEven ? 'right-8' : 'left-8'} z-10`}
+          >
+            <div className="glass-strong px-6 py-4 text-center">
+              <span className="block font-sans text-[9px] tracking-[0.4em] text-white/20 uppercase mb-1">Başlangıç</span>
+              <span className="block font-serif text-3xl text-orange-gradient leading-none">₺{price}</span>
+              <span className="block font-sans text-[10px] text-white/20 mt-1 border border-white/[0.06] px-2 py-0.5 inline-block">{service.duration}</span>
             </div>
           </motion.div>
         </div>
-      </div>
-    </motion.div>
-  );
-}
 
-/* Giant full-viewport banner */
-function ServiceGiantBanner({ service, index }: { service: typeof SERVICES[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const price = usePriceCounter(Number(service.price), isInView, 1500);
-
-  return (
-    <motion.div ref={ref} className="relative w-full h-screen overflow-hidden" initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ duration: 1 }}>
-      <motion.img src={service.image} alt={service.title} className="absolute inset-0 w-full h-full object-cover"
-        initial={{ scale: 1.2 }} animate={isInView ? { scale: 1 } : {}} transition={{ duration: 2 }} />
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70" />
-
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6">
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.4 }}>
-          <span className="font-sans text-[9px] tracking-[0.5em] text-black/80 bg-gold-gradient px-5 py-1.5">EN POPÜLER</span>
-        </motion.div>
-        <motion.span initial={{ y: 20, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.5 }}
-          className="font-mono text-[10px] tracking-[0.4em] text-white/15 uppercase mt-6 mb-3">0{index + 1}</motion.span>
-        <motion.h3 initial={{ y: 30, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="heading-display text-[clamp(2rem,6vw,6rem)] text-gold-gradient mb-2">{service.title}</motion.h3>
-        <motion.p initial={{ y: 20, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.7 }}
-          className="font-sans text-[10px] tracking-[0.3em] text-white/25 uppercase mb-3">{service.subtitle}</motion.p>
-        <motion.p initial={{ y: 20, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.8 }}
-          className="font-sans text-[11px] text-white/25 leading-relaxed max-w-sm text-center mb-8">{service.description}</motion.p>
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.9 }}
-          className="flex items-center gap-8">
-          <div className="flex flex-col items-center">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-white/15 uppercase">Başlangıç</span>
-            <span className="font-serif text-4xl md:text-5xl lg:text-6xl text-gold-gradient leading-none">${price}</span>
+        {/* Text Side */}
+        <div className={`relative flex items-center order-2 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+          <div className={`px-8 md:px-12 lg:px-16 xl:px-20 py-12 ${!isEven ? 'lg:text-right' : ''}`}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span className="font-mono text-[10px] tracking-[0.4em] text-white/10 uppercase block mb-4">0{index + 1}</span>
+              <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white/90 tracking-tight leading-tight mb-3">{service.title}</h3>
+              <p className="font-sans text-[11px] tracking-[0.2em] text-orange/40 uppercase mb-5">{service.subtitle}</p>
+              <p className="font-sans text-sm text-white/30 leading-relaxed max-w-md mb-8">{service.description}</p>
+              <a
+                href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(`Merhaba, ${service.title} hizmeti için randevu almak istiyorum.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border border-orange/20 px-6 py-2.5 text-[10px] font-medium tracking-[0.25em] uppercase text-orange/60 hover:text-orange hover:border-orange/40 transition-all duration-300"
+              >
+                <span>Randevu Al</span>
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+                </svg>
+              </a>
+            </motion.div>
           </div>
-          <div className="h-12 w-px bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
-          <div className="flex flex-col items-center">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-white/15 uppercase">Süre</span>
-            <span className="font-serif text-xl md:text-2xl text-white/60 leading-none">{service.duration}</span>
-          </div>
-        </motion.div>
-        <motion.a initial={{ y: 20, opacity: 0 }} animate={isInView ? { y: 0, opacity: 1 } : {}} transition={{ duration: 0.6, delay: 1.1 }}
-          href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Merhaba NOIR BARBER, randevu almak istiyorum.')}`}
-          target="_blank" rel="noopener noreferrer"
-          className="mt-10 inline-block border border-white/15 bg-white/[0.06] px-8 py-3 text-[10px] font-medium uppercase tracking-[0.3em] text-white/50 hover:text-gold hover:border-gold/30 transition-all duration-500">
-          WhatsApp ile Randevu Al
-        </motion.a>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

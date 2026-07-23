@@ -11,7 +11,7 @@ import {
 import { RiArrowDownLine } from 'react-icons/ri';
 import { IMAGES, BRAND } from './data';
 
-const HEADING_CHARS = 'NOIR'.split('');
+const HEADING_CHARS = 'BATUHAN'.split('');
 
 const containerVariants = {
   hidden: {},
@@ -68,7 +68,7 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <motion.img
           src={IMAGES.hero}
-          alt="NOIR Barber"
+          alt="Batuhan Taşcı Men's Hair"
           className="h-full w-full object-cover"
           style={{ x: springX, y: springY }}
           animate={{ scale: [1, 1.15] }}
@@ -100,14 +100,14 @@ export default function HeroSection() {
           animate="visible"
           className="max-w-2xl"
         >
-          {/* NOIR — character reveal */}
+          {/* BATUHAN — character reveal */}
           <div className="overflow-hidden">
             <motion.h1 className="heading-display text-[clamp(4rem,13vw,11rem)] leading-none">
               {HEADING_CHARS.map((char, i) => (
                 <motion.span
                   key={i}
                   variants={charVariants}
-                  className="inline-block text-gold-gradient"
+                  className="inline-block text-orange-gradient"
                 >
                   {char}
                 </motion.span>
@@ -115,33 +115,43 @@ export default function HeroSection() {
             </motion.h1>
           </div>
 
-          {/* BARBER subheading */}
+          {/* TAŞCI subheading */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
             className="mt-1 font-serif text-[clamp(1.2rem,3vw,2.2rem)] font-light tracking-[0.35em] text-white/40"
           >
-            BARBER
+            TAŞCI
           </motion.p>
 
-          {/* Thin gold line */}
+          {/* Thin orange line */}
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: 80 }}
             transition={{ duration: 1, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
             className="mt-5 h-px"
-            style={{ background: 'linear-gradient(90deg, #c9a96e 0%, transparent 100%)' }}
+            style={{ background: 'linear-gradient(90deg, #FF6B00 0%, transparent 100%)' }}
           />
 
-          {/* Tagline — small, muted, overlaid on image */}
+          {/* Tagline */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.5, ease: 'easeOut' }}
             className="mt-5 text-[10px] font-medium uppercase tracking-[0.6em] text-white/25"
           >
-            HASSASİYET VE SANAT BULUŞUR
+            MEN&apos;S HAIR ARTIST — KARTAL
+          </motion.p>
+
+          {/* Sub-tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 1.6, ease: 'easeOut' }}
+            className="mt-2 text-[10px] font-medium uppercase tracking-[0.6em] text-white/20"
+          >
+            Hassasiyet ve Sanat Buluşur
           </motion.p>
 
           {/* CTA */}
@@ -152,12 +162,12 @@ export default function HeroSection() {
             className="mt-8"
           >
             <a
-              href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Hello NOIR BARBER — I would like to book an appointment.')}`}
+              href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Merhaba Batuhan, randevu almak istiyorum.')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block border border-white/15 bg-white/[0.06] backdrop-blur-sm px-8 py-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/70 hover:text-gold hover:border-gold/30 transition-all duration-500"
+              className="inline-block border border-white/15 bg-white/[0.06] backdrop-blur-sm px-8 py-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/70 hover:text-orange hover:border-orange/30 transition-all duration-500"
             >
-              Deneyimini Yaşa
+              Randevu Al
             </a>
           </motion.div>
         </motion.div>
@@ -169,9 +179,9 @@ export default function HeroSection() {
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2"
       >
         <span className="text-[9px] font-medium uppercase tracking-[0.5em] text-white/15">
-          SCROLL
+          KAYDIR
         </span>
-        <RiArrowDownLine className="w-3.5 h-3.5 text-gold/30 animate-bounce" />
+        <RiArrowDownLine className="w-3.5 h-3.5 text-orange/30 animate-bounce" />
       </motion.div>
     </section>
   );

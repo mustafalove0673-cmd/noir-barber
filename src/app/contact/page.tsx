@@ -2,191 +2,94 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  HiOutlineMapPin,
-  HiOutlinePhone,
-  HiOutlineEnvelope,
-  HiOutlineClock,
-} from 'react-icons/hi2';
-import { RiWhatsappFill } from 'react-icons/ri';
-import PageLayout from '@/components/barber/PageLayout';
+import { HiOutlineMapPin, HiOutlinePhone, HiOutlineEnvelope, HiOutlineClock } from 'react-icons/hi2';
+import SmoothScroll from '@/components/barber/SmoothScroll';
+import Navigation from '@/components/barber/Navigation';
+import Footer from '@/components/barber/Footer';
+import StickyButtons from '@/components/barber/StickyButtons';
 import { BRAND } from '@/components/barber/data';
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-}
-
-const contactInfo = [
-  { icon: HiOutlineMapPin, text: BRAND.address, href: undefined },
-  { icon: HiOutlinePhone, text: BRAND.phone, href: `tel:${BRAND.phone}` },
-  { icon: HiOutlineEnvelope, text: BRAND.email, href: `mailto:${BRAND.email}` },
-  { icon: HiOutlineClock, text: BRAND.hours, href: undefined },
-];
-
-function FloatingInput({ label, name, type = 'text', value, onChange, required = false, multiline = false, delay = 0 }: {
-  label: string; name: string; type?: string; value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  required?: boolean; multiline?: boolean; delay?: number;
-}) {
-  const [focused, setFocused] = useState(false);
-  const isActive = focused || value.length > 0;
-  const cls = 'w-full bg-transparent border-b border-gold/20 text-foreground font-sans text-base py-3 px-1 outline-none transition-all duration-300 placeholder-transparent';
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className="relative"
-    >
-      {multiline ? (
-        <textarea name={name} value={value} onChange={onChange} rows={3} className={`${cls} resize-none`} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} required={required} />
-      ) : (
-        <input type={type} name={name} value={value} onChange={onChange} className={cls} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} required={required} />
-      )}
-      <label className={`absolute left-1 pointer-events-none transition-all duration-300 font-sans text-sm ${isActive ? '-top-2 text-gold text-xs tracking-wider uppercase' : 'top-3 text-foreground/30'}`}>
-        {label}
-        {!required && <span className="text-foreground/20 ml-1 text-xs lowercase">(optional)</span>}
-      </label>
-      <motion.div className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-gold to-gold-light" initial={{ width: '0%' }} animate={{ width: focused ? '100%' : '0%' }} transition={{ duration: 0.4 }} />
-    </motion.div>
-  );
-}
-
 export default function ContactPage() {
-  const [form, setForm] = useState<FormData>({ name: '', email: '', phone: '', message: '' });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
     try {
       const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-      const data = await res.json();
-      setStatus(data.success ? 'success' : 'error');
-    } catch { setStatus('error'); }
+      if (res.ok) setStatus('success');
+    } catch { setStatus('idle'); }
   };
 
+  const info = [
+    { icon: HiOutlineMapPin, text: BRAND.address },
+    { icon: HiOutlinePhone, text: BRAND.phone },
+    { icon: HiOutlineEnvelope, text: BRAND.email },
+    { icon: HiOutlineClock, text: BRAND.hours },
+  ];
+
   return (
-    <PageLayout title="Contact" subtitle="Get In Touch" number="05">
-      <div className="max-w-6xl mx-auto px-6 pt-10 pb-16 md:pb-24">
-        {/* Map */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative rounded-xl overflow-hidden mb-12 md:mb-16"
-          style={{ boxShadow: '0 0 40px rgba(201,169,110,0.1)' }}
-        >
-          <iframe
-            src={BRAND.mapsEmbedUrl}
-            width="100%" height="300"
-            style={{ border: 0, filter: 'grayscale(1) invert(1) contrast(0.9) brightness(0.8)' }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="NOIR BARBER location"
-            className="rounded-xl"
-          />
-          <div className="absolute inset-0 rounded-xl border border-gold/20 pointer-events-none" />
-        </motion.div>
-
-        {/* Contact Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12 md:mb-16">
-          {contactInfo.slice(0, 3).map((item, i) => (
-            <motion.a
-              key={i}
-              href={item.href}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -4, borderColor: 'rgba(201,169,110,0.4)' }}
-              className="glass-strong rounded-xl p-5 text-center border border-transparent transition-all duration-300 hover:shadow-gold"
-            >
-              <item.icon className="w-5 h-5 text-gold mx-auto mb-3" />
-              <p className="font-sans text-xs text-foreground/60 leading-relaxed">{item.text}</p>
-            </motion.a>
-          ))}
-        </div>
-
-        {/* Form + Info Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
-          {/* Form */}
-          <div className="lg:col-span-3">
-            <AnimatePresence mode="wait">
-              {status !== 'success' ? (
-                <motion.form key="form" onSubmit={handleSubmit} className="space-y-6" initial={{ opacity: 1 }} exit={{ opacity: 0, y: -10 }}>
-                  <FloatingInput label="Name" name="name" value={form.name} onChange={handleChange} required delay={0} />
-                  <FloatingInput label="Email" name="email" type="email" value={form.email} onChange={handleChange} required delay={0.05} />
-                  <FloatingInput label="Phone" name="phone" type="tel" value={form.phone} onChange={handleChange} delay={0.1} />
-                  <FloatingInput label="Message" name="message" value={form.message} onChange={handleChange} required multiline delay={0.15} />
-                  <motion.button type="submit" disabled={status === 'loading'}
-                    className="w-full py-3.5 bg-gold text-background font-sans text-[11px] font-semibold uppercase tracking-[0.2em] btn-shine transition-all hover:shadow-gold disabled:opacity-60"
-                    whileTap={{ scale: 0.98 }}>
-                    {status === 'loading' ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <motion.span className="inline-block w-4 h-4 border-2 border-background border-t-transparent rounded-full" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }} />
-                        SENDING...
-                      </span>
-                    ) : 'SEND MESSAGE'}
-                  </motion.button>
-                  {status === 'error' && <p className="text-center text-red-400/70 text-xs font-sans">Something went wrong. Please try again.</p>}
-                </motion.form>
-              ) : (
-                <motion.div key="success" className="flex flex-col items-center justify-center py-12 space-y-4" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-                  <motion.svg viewBox="0 0 52 52" className="w-16 h-16"><motion.circle cx="26" cy="26" r="25" fill="none" stroke="#c9a96e" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6 }} /><motion.path fill="none" stroke="#c9a96e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" d="M14.1 27.2l7.1 7.2 16.7-16.8" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.5 }} /></motion.svg>
-                  <p className="heading-editorial text-lg text-gold-gradient">Message Sent</p>
-                  <p className="font-sans text-xs text-foreground/40">We&apos;ll get back to you shortly.</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+    <SmoothScroll>
+      <Navigation />
+      <StickyButtons />
+      <main className="min-h-screen bg-[#0a0a0a] text-foreground overflow-x-hidden">
+        <section className="px-6 md:px-12 lg:px-20 pt-32 pb-10">
+          <div className="max-w-5xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <span className="font-mono text-[10px] tracking-[0.5em] text-orange/30 uppercase block mb-3">04</span>
+              <h1 className="heading-display text-[clamp(3rem,8vw,7rem)] text-orange-gradient mb-3">İLETİŞİM</h1>
+            </motion.div>
           </div>
+        </section>
 
-          {/* Info */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="glass-strong rounded-xl p-6">
-              <p className="font-sans text-[10px] tracking-[0.3em] text-gold/60 uppercase mb-3">Hours</p>
-              <p className="font-sans text-sm text-foreground/70">{BRAND.hours}</p>
-              <p className="font-sans text-xs text-foreground/30 mt-2">Closed Sundays</p>
+        <section className="px-6 md:px-12 lg:px-20 pb-20">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
+            {/* Form */}
+            <div className="lg:col-span-3">
+              <AnimatePresence mode="wait">
+                {status !== 'success' ? (
+                  <motion.form key="form" onSubmit={handleSubmit} initial={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-5">
+                    <div className="grid grid-cols-2 gap-4">
+                      <input name="name" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required placeholder="İsim" className="w-full bg-white/[0.03] border-b border-white/10 text-white/60 font-sans text-sm py-3 px-1 outline-none focus:border-orange/40 transition-colors placeholder:text-white/10" />
+                      <input name="phone" type="tel" value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="Telefon" className="w-full bg-white/[0.03] border-b border-white/10 text-white/60 font-sans text-sm py-3 px-1 outline-none focus:border-orange/40 transition-colors placeholder:text-white/10" />
+                    </div>
+                    <input name="email" type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} required placeholder="E-posta" className="w-full bg-white/[0.03] border-b border-white/10 text-white/60 font-sans text-sm py-3 px-1 outline-none focus:border-orange/40 transition-colors placeholder:text-white/10" />
+                    <textarea name="message" value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} required placeholder="Mesajınız" rows={3} className="w-full bg-white/[0.03] border-b border-white/10 text-white/60 font-sans text-sm py-3 px-1 outline-none focus:border-orange/40 transition-colors resize-none placeholder:text-white/10" />
+                    <button type="submit" disabled={status === 'loading'} className="w-full py-3 bg-orange text-background font-sans text-[10px] font-semibold tracking-[0.25em] uppercase btn-shine hover:shadow-orange transition-all disabled:opacity-50">
+                      {status === 'loading' ? 'GÖNDERİLİYOR...' : 'MESAJ GÖNDER'}
+                    </button>
+                  </motion.form>
+                ) : (
+                  <motion.div key="ok" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-16">
+                    <div className="w-16 h-16 rounded-full border-2 border-orange flex items-center justify-center mb-4">✓</div>
+                    <p className="font-serif text-lg text-orange-gradient">Mesajınız gönderildi</p>
+                    <p className="font-sans text-[11px] text-white/20 mt-2">En kısa sürede dönüş yapacağız</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <a
-              href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Hi NOIR, I would like to book an appointment.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 glass-strong rounded-xl p-5 border border-gold/10 hover:border-gold/30 transition-all hover:shadow-gold group"
-            >
-              <span className="flex-shrink-0 w-12 h-12 rounded-full bg-[#25D366]/20 flex items-center justify-center">
-                <RiWhatsappFill className="w-6 h-6 text-[#25D366]" />
-              </span>
-              <div>
-                <p className="font-sans text-sm font-medium text-foreground/80 group-hover:text-gold transition-colors">Prefer WhatsApp?</p>
-                <p className="font-sans text-xs text-foreground/40">Quick booking &amp; inquiries</p>
+            {/* Info + Map */}
+            <div className="lg:col-span-2 space-y-6">
+              <iframe src={BRAND.mapsEmbedUrl} width="100%" height="200" style={{ border: 0, filter: 'grayscale(1) invert(1) contrast(0.9) brightness(0.7)' }} allowFullScreen loading="lazy" title="Konum" />
+              <div className="space-y-2.5">
+                {info.map((item, i) => (
+                  <a key={i} href={item.text.startsWith('+') ? `tel:${BRAND.phone}` : item.text.includes('@') ? `mailto:${BRAND.email}` : undefined} className="flex items-center gap-2.5 py-1.5 group">
+                    <item.icon className="w-3 h-3 text-white/15 group-hover:text-orange/50 transition-colors flex-shrink-0" />
+                    <span className="font-sans text-[10px] text-white/25 group-hover:text-white/45 transition-colors">{item.text}</span>
+                  </a>
+                ))}
               </div>
-            </a>
-
-            <a
-              href={`tel:${BRAND.phone}`}
-              className="flex items-center gap-4 glass-strong rounded-xl p-5 border border-gold/10 hover:border-gold/30 transition-all hover:shadow-gold group"
-            >
-              <span className="flex-shrink-0 w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center">
-                <HiOutlinePhone className="w-5 h-5 text-gold" />
-              </span>
-              <div>
-                <p className="font-sans text-sm font-medium text-foreground/80 group-hover:text-gold transition-colors">Call Us Directly</p>
-                <p className="font-sans text-xs text-foreground/40">{BRAND.phone}</p>
+              <div className="flex gap-2">
+                <a href={`https://wa.me/${BRAND.whatsapp}`} target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2 border border-[#25D366]/20 text-[#25D366]/50 text-[9px] tracking-[0.2em] uppercase hover:border-[#25D366]/40 hover:text-[#25D366] transition-all">WhatsApp</a>
+                <a href={`tel:${BRAND.phone}`} className="flex-1 text-center py-2 border border-orange/20 text-orange/50 text-[9px] tracking-[0.2em] uppercase hover:border-orange/40 hover:text-orange transition-all">Ara</a>
               </div>
-            </a>
+            </div>
           </div>
-        </div>
-      </div>
-    </PageLayout>
+        </section>
+        <Footer />
+      </main>
+    </SmoothScroll>
   );
 }

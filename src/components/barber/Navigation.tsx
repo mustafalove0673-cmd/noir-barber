@@ -65,11 +65,13 @@ export default function Navigation() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center justify-center w-11 h-11 rounded-full hover:bg-gold/10 transition-colors duration-300"
+            className="flex items-center justify-center w-11 h-11 rounded-full hover:bg-orange/10 transition-colors duration-300"
           >
-            <span className="font-serif text-sm font-bold tracking-[0.15em] text-gold-gradient">
-              N
-            </span>
+            <img
+              src="/logo.png"
+              alt="Batuhan Taşcı"
+              className="w-7 h-7 rounded-full object-cover"
+            />
           </Link>
 
           {/* ── Desktop: Expanding Link Bar ── */}
@@ -83,7 +85,7 @@ export default function Navigation() {
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden flex items-center"
                 >
-                  <div className="h-4 w-px bg-gold/20 mx-2" />
+                  <div className="h-4 w-px bg-orange/20 mx-2" />
                   <div className="flex items-center gap-0.5 px-1">
                     {NAV_LINKS.map((link, i) => (
                       <motion.div
@@ -96,21 +98,21 @@ export default function Navigation() {
                         {link.href === '/' ? (
                           <Link
                             href="/"
-                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-gold transition-colors duration-200"
+                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-orange transition-colors duration-200"
                           >
                             {link.label}
                           </Link>
                         ) : link.href.startsWith('/') ? (
                           <Link
                             href={link.href}
-                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-gold transition-colors duration-200"
+                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-orange transition-colors duration-200"
                           >
                             {link.label}
                           </Link>
                         ) : (
                           <button
                             onClick={() => scrollToSection(link.href)}
-                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-gold transition-colors duration-200"
+                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-orange transition-colors duration-200"
                           >
                             {link.label}
                           </button>
@@ -124,7 +126,7 @@ export default function Navigation() {
           </div>
 
           {/* Separator */}
-          <div className="hidden lg:block h-4 w-px bg-gold/15 mx-1.5" />
+          <div className="hidden lg:block h-4 w-px bg-orange/15 mx-1.5" />
 
           {/* WhatsApp micro button */}
           <a
@@ -140,8 +142,8 @@ export default function Navigation() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="relative z-[110] flex items-center justify-center w-8 h-8 rounded-full text-foreground/40 hover:text-gold transition-colors duration-300 lg:hidden"
-            aria-label="Menu"
+            className="relative z-[110] flex items-center justify-center w-8 h-8 rounded-full text-foreground/40 hover:text-orange transition-colors duration-300 lg:hidden"
+            aria-label="Menü"
           >
             <AnimatePresence mode="wait">
               {mobileOpen ? (
@@ -173,8 +175,8 @@ export default function Navigation() {
             <div className="absolute inset-0 bg-[#050505]/98 backdrop-blur-2xl" />
 
             {/* Decorative vertical lines */}
-            <div className="absolute top-0 left-[20%] w-px h-full bg-gradient-to-b from-transparent via-gold/5 to-transparent" />
-            <div className="absolute top-0 right-[20%] w-px h-full bg-gradient-to-b from-transparent via-gold/5 to-transparent" />
+            <div className="absolute top-0 left-[20%] w-px h-full bg-gradient-to-b from-transparent via-orange/5 to-transparent" />
+            <div className="absolute top-0 right-[20%] w-px h-full bg-gradient-to-b from-transparent via-orange/5 to-transparent" />
 
             {/* Links */}
             <nav className="relative z-10 flex flex-col items-center gap-1 px-6">
@@ -196,13 +198,13 @@ export default function Navigation() {
                       onClick={() => setMobileOpen(false)}
                       className="group flex items-center gap-4 py-2"
                     >
-                      <span className="font-sans text-[10px] tracking-[0.3em] text-gold/20 font-mono">
+                      <span className="font-sans text-[10px] tracking-[0.3em] text-orange/20 font-mono">
                         {NAV_NUMBERS[i]}
                       </span>
-                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-gold transition-colors duration-400">
+                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-orange transition-colors duration-400">
                         {link.label}
                       </span>
-                      <RiArrowRightUpLine className="w-4 h-4 text-gold/0 group-hover:text-gold/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
+                      <RiArrowRightUpLine className="w-4 h-4 text-orange/0 group-hover:text-orange/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
                     </Link>
                   ) : link.href.startsWith('/') ? (
                     <Link
@@ -210,26 +212,26 @@ export default function Navigation() {
                       onClick={() => setMobileOpen(false)}
                       className="group flex items-center gap-4 py-2"
                     >
-                      <span className="font-sans text-[10px] tracking-[0.3em] text-gold/20 font-mono">
+                      <span className="font-sans text-[10px] tracking-[0.3em] text-orange/20 font-mono">
                         {NAV_NUMBERS[i]}
                       </span>
-                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-gold transition-colors duration-400">
+                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-orange transition-colors duration-400">
                         {link.label}
                       </span>
-                      <RiArrowRightUpLine className="w-4 h-4 text-gold/0 group-hover:text-gold/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
+                      <RiArrowRightUpLine className="w-4 h-4 text-orange/0 group-hover:text-orange/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
                     </Link>
                   ) : (
                     <button
                       onClick={() => scrollToSection(link.href)}
                       className="group flex items-center gap-4 py-2"
                     >
-                      <span className="font-sans text-[10px] tracking-[0.3em] text-gold/20 font-mono">
+                      <span className="font-sans text-[10px] tracking-[0.3em] text-orange/20 font-mono">
                         {NAV_NUMBERS[i]}
                       </span>
-                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-gold transition-colors duration-400">
+                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-orange transition-colors duration-400">
                         {link.label}
                       </span>
-                      <RiArrowRightUpLine className="w-4 h-4 text-gold/0 group-hover:text-gold/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
+                      <RiArrowRightUpLine className="w-4 h-4 text-orange/0 group-hover:text-orange/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
                     </button>
                   )}
                 </motion.div>
@@ -244,7 +246,7 @@ export default function Navigation() {
               transition={{ delay: 0.6, duration: 0.5 }}
               className="absolute bottom-10 left-0 right-0 flex flex-col items-center gap-3 px-6"
             >
-              <div className="h-px w-16 bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+              <div className="h-px w-16 bg-gradient-to-r from-transparent via-orange/30 to-transparent" />
               <div className="flex items-center gap-3">
                 <RiWhatsappFill className="w-3.5 h-3.5 text-[#25D366]/60" />
                 <span className="font-sans text-[10px] tracking-[0.2em] text-foreground/30 uppercase">

@@ -5,6 +5,7 @@ import Navigation from "@/components/barber/Navigation";
 import HeroSection from "@/components/barber/HeroSection";
 import ServicesSection from "@/components/barber/ServicesSection";
 import GallerySection from "@/components/barber/GallerySection";
+import ReelsSection from "@/components/barber/ReelsSection";
 import TestimonialsSection from "@/components/barber/TestimonialsSection";
 import InstagramSection from "@/components/barber/InstagramSection";
 import BookingCTA from "@/components/barber/BookingCTA";
@@ -21,6 +22,7 @@ export default function Home() {
         <HeroSection />
         <ServicesSection />
         <GallerySection />
+        <ReelsSection />
         <TestimonialsSection />
         <InstagramSection />
         <BookingCTA />

@@ -2,159 +2,90 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RiArrowRightLine } from 'react-icons/ri';
-import PageLayout from '@/components/barber/PageLayout';
+import SmoothScroll from '@/components/barber/SmoothScroll';
+import Navigation from '@/components/barber/Navigation';
+import Footer from '@/components/barber/Footer';
+import StickyButtons from '@/components/barber/StickyButtons';
 import { ALL_SERVICES, BRAND } from '@/components/barber/data';
 
-const categories = [
-  { key: 'all', label: 'All' },
-  { key: 'cuts', label: 'Cuts' },
-  { key: 'shaves', label: 'Shaves' },
-  { key: 'treatments', label: 'Treatments' },
+const cats = [
+  { key: 'all', label: 'Tümü' },
+  { key: 'cut', label: 'Kesim' },
+  { key: 'shave', label: 'Tıraş' },
+  { key: 'care', label: 'Bakım' },
+  { key: 'special', label: 'Özel' },
 ];
 
-const categoryMap: Record<string, number[]> = {
-  all: [1, 2, 3, 4, 5, 6, 7, 8],
-  cuts: [1, 6],
-  shaves: [2, 7],
-  treatments: [3, 4, 5, 8],
-};
+function getCat(id: number) {
+  if (id <= 1 || id === 6) return 'cut';
+  if (id === 2) return 'shave';
+  if (id === 3 || id === 5) return 'care';
+  return 'special';
+}
 
 export default function ServicesPage() {
-  const [activeCat, setActiveCat] = useState('all');
-  const filtered = ALL_SERVICES.filter((s) => categoryMap[activeCat]?.includes(s.id));
+  const [active, setActive] = useState('all');
+  const filtered = active === 'all' ? ALL_SERVICES : ALL_SERVICES.filter(s => getCat(s.id) === active);
 
   return (
-    <PageLayout title="Services" subtitle="Every Cut Tells a Story" number="02">
-      {/* Filter Tabs */}
-      <div className="max-w-6xl mx-auto px-6 pt-10 pb-8">
-        <div className="flex flex-wrap gap-3">
-          {categories.map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => setActiveCat(cat.key)}
-              className={`px-5 py-2 text-[11px] font-medium uppercase tracking-[0.2em] border transition-all duration-300 ${
-                activeCat === cat.key
-                  ? 'bg-gold/10 border-gold text-gold'
-                  : 'border-foreground/10 text-foreground/40 hover:border-gold/30 hover:text-foreground/60'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <SmoothScroll>
+      <Navigation />
+      <StickyButtons />
+      <main className="min-h-screen bg-[#0a0a0a] text-foreground overflow-x-hidden">
+        {/* Hero */}
+        <section className="px-6 md:px-12 lg:px-20 pt-32 pb-10">
+          <div className="max-w-5xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <span className="font-mono text-[10px] tracking-[0.5em] text-orange/30 uppercase block mb-3">Ne Sunuyoruz</span>
+              <h1 className="heading-display text-[clamp(3rem,8vw,7rem)] text-orange-gradient mb-3">HİZMETLER</h1>
+              <p className="font-sans text-sm text-white/20 tracking-wider max-w-md">Premium erkek bakım deneyimi</p>
+            </motion.div>
+          </div>
+        </section>
 
-      {/* Services */}
-      <div className="max-w-6xl mx-auto px-6 pb-16 md:pb-24">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeCat}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-12 md:space-y-16"
-          >
-            {filtered.map((service, i) => (
-              <motion.div
-                key={service.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.6, delay: i * 0.05 }}
-                className={`grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-0 items-center ${
-                  i % 2 === 0 ? '' : 'lg:[&>*:first-child]:order-2 lg:[&>*:last-child]:order-1'
-                }`}
-              >
-                {/* Image */}
-                <motion.div
-                  initial={{ x: i % 2 === 0 ? -40 : 40, opacity: 0 }}
-                  whileInView={{ x: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7 }}
-                  className={`lg:col-span-3 relative img-zoom overflow-hidden ${
-                    i % 2 === 0 ? 'lg:-mr-8' : 'lg:-ml-8'
-                  }`}
-                >
-                  <div className="aspect-[16/10]">
-                    <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0a]/50" />
-                  </div>
-                  <div className="absolute top-4 left-4 font-sans text-xs tracking-[0.3em] text-gold/60">
-                    0{service.id}
-                  </div>
-                </motion.div>
-
-                {/* Content */}
-                <motion.div
-                  initial={{ x: i % 2 === 0 ? 40 : -40, opacity: 0 }}
-                  whileInView={{ x: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, delay: 0.15 }}
-                  className={`lg:col-span-2 relative z-10 space-y-4 ${
-                    i % 2 === 0 ? 'lg:pl-8' : 'lg:pr-8 lg:text-right'
-                  }`}
-                >
-                  <p className="font-sans text-[10px] tracking-[0.3em] text-gold/50 uppercase">
-                    {service.subtitle}
-                  </p>
-                  <h3 className="heading-editorial text-2xl md:text-3xl lg:text-4xl text-foreground">
-                    {service.title}
-                  </h3>
-                  <p className="font-sans text-sm text-foreground/50 leading-relaxed max-w-md">
-                    {service.description}
-                  </p>
-                  <div className={`flex items-center gap-4 ${i % 2 === 0 ? '' : 'lg:justify-end'}`}>
-                    <span className="font-serif text-3xl md:text-4xl text-gold-gradient">
-                      ${service.price}
-                    </span>
-                    <span className="font-sans text-[10px] tracking-[0.2em] text-foreground/30 border border-foreground/10 px-3 py-1">
-                      {service.duration}
-                    </span>
-                  </div>
-                  <a
-                    href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(`Hi NOIR, I'd like to book ${service.title}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.15em] text-gold hover:text-gold-light transition-colors group ${
-                      i % 2 === 0 ? '' : 'lg:flex-row-reverse'
-                    }`}
-                  >
-                    Book This Service
-                    <RiArrowRightLine className={`text-sm transition-transform group-hover:translate-x-1 ${i % 2 === 0 ? '' : 'rotate-180 group-hover:-translate-x-1'}`} />
-                  </a>
-                </motion.div>
-              </motion.div>
+        {/* Filters */}
+        <section className="px-6 md:px-12 lg:px-20 mb-10">
+          <div className="max-w-5xl mx-auto flex flex-wrap gap-2">
+            {cats.map(cat => (
+              <button key={cat.key} onClick={() => setActive(cat.key)} className={`relative px-5 py-2 rounded-full text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 ${active === cat.key ? 'text-background' : 'text-white/40 hover:text-white/60'}`}>
+                {active === cat.key && <motion.span layoutId="svcFilter" className="absolute inset-0 rounded-full bg-orange" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
+                <span className="relative z-10">{cat.label}</span>
+              </button>
             ))}
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        </section>
 
-        {/* Final CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-16 md:mt-24 text-center"
-        >
-          <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-gold/40 to-transparent mb-8" />
-          <p className="heading-editorial text-xl md:text-2xl text-foreground mb-3">
-            Can&apos;t Decide?
-          </p>
-          <p className="font-sans text-sm text-foreground/40 mb-8">
-            Let our experts guide you to the perfect service.
-          </p>
-          <a
-            href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent('Hi NOIR, I need help choosing a service.')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-7 py-3 bg-gold text-background text-[11px] font-semibold uppercase tracking-[0.2em] btn-shine transition-all hover:shadow-gold"
-          >
-            Chat With Us
-          </a>
-        </motion.div>
-      </div>
-    </PageLayout>
+        {/* Grid */}
+        <section className="px-6 md:px-12 lg:px-20 pb-20">
+          <div className="max-w-5xl mx-auto space-y-4">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((s, i) => (
+                <motion.div key={s.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.4, delay: i * 0.05 }} className="glass p-6 group hover:border-orange/20 transition-all duration-500">
+                  <div className="flex flex-col md:flex-row gap-6 items-start">
+                    <img src={s.image} alt={s.title} className="w-20 h-20 md:w-24 md:h-24 object-cover border border-white/[0.06]" />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-[10px] text-orange/20">{String(s.id).padStart(2, '0')}</span>
+                        <h3 className="font-serif text-lg text-white/70">{s.title}</h3>
+                      </div>
+                      <p className="font-sans text-[10px] text-orange/30 uppercase tracking-wider mb-2">{s.subtitle}</p>
+                      <p className="font-sans text-[12px] text-white/20 leading-relaxed mb-4">{s.description}</p>
+                      <div className="flex items-center gap-4">
+                        <span className="font-serif text-xl text-orange-gradient">₺{s.price}</span>
+                        <span className="font-mono text-[10px] text-white/15 border border-white/[0.06] px-2 py-0.5">{s.duration}</span>
+                        <a href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(`Merhaba, ${s.title} için randevu almak istiyorum.`)}`} target="_blank" rel="noopener noreferrer" className="ml-auto text-[10px] text-orange/50 hover:text-orange border border-orange/20 px-4 py-1.5 uppercase tracking-wider transition-all">
+                          Randevu
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </section>
+        <Footer />
+      </main>
+    </SmoothScroll>
   );
 }

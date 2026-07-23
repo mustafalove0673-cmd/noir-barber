@@ -17,24 +17,30 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "NOIR BARBER | Luxury Grooming Atelier",
+  title: "Batuhan Taşcı Men's Hair | Hair Artist — Kartal, İstanbul",
   description:
-    "Where precision meets artistry. Experience the finest men's grooming at NOIR BARBER — a luxury atelier redefining the craft of barbering.",
+    "İstanbul Kartal'da premium erkek kuaför deneyimi. Batuhan Taşcı, saç sanatıyla mükemmelliğe ulaşmanızı sağlıyor. Randevu için hemen arayın!",
   keywords: [
-    "luxury barber",
-    "men's grooming",
-    "premium haircut",
-    "gentleman's barber",
-    "barbershop",
-    "NOIR BARBER",
+    "erkek kuaförü",
+    "barber",
+    "saç sanatçısı",
+    "İstanbul kuaför",
+    "Kartal berber",
+    "fade kesim",
+    "sakal şekillendirme",
+    "Batuhan Taşcı",
+    "men's hair",
+    "hair artist",
+    "premium kuaför",
+    "VIP bakım",
   ],
-  authors: [{ name: "NOIR BARBER" }],
+  authors: [{ name: "Batuhan Taşcı" }],
   openGraph: {
-    title: "NOIR BARBER | Luxury Grooming Atelier",
+    title: "Batuhan Taşcı Men's Hair | Hair Artist",
     description:
-      "Where precision meets artistry. Experience the finest men's grooming.",
+      "İstanbul Kartal'da premium erkek kuaför deneyimi. Hassasiyet ve sanat buluşuyor.",
     type: "website",
-    locale: "en_US",
+    locale: "tr_TR",
   },
 };
 
@@ -44,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${playfair.variable} antialiased noise-overlay`}
       >
