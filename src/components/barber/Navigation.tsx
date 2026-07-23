@@ -4,170 +4,253 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiOutlineBars3, HiOutlineXMark } from 'react-icons/hi2';
-import { RiWhatsappFill } from 'react-icons/ri';
+import { RiWhatsappFill, RiArrowRightUpLine } from 'react-icons/ri';
 import { NAV_LINKS, BRAND } from './data';
+
+const NAV_NUMBERS = ['01', '02', '03', '04', '05', '06', '07', '08', '09'];
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopExpanded, setDesktopExpanded] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 60);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    if (mobileOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
+  // Close expanded nav on scroll
+  useEffect(() => {
+    if (!desktopExpanded) return;
+    const onScroll = () => setDesktopExpanded(false);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [desktopExpanded]);
+
   const scrollToSection = useCallback((href: string) => {
-    if (href.startsWith('/')) return; // handled by Link
+    if (href.startsWith('/')) return;
     const id = href.replace('#', '');
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
     setMobileOpen(false);
+    setDesktopExpanded(false);
   }, []);
 
   return (
     <>
+      {/* ── Floating Capsule ── */}
       <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-          scrolled ? 'glass-strong' : 'bg-transparent'
-        }`}
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-3 left-1/2 -translate-x-1/2 z-[100]"
       >
-        <nav className="mx-auto flex h-16 md:h-20 max-w-[1800px] items-center justify-between px-4 md:px-8 lg:px-12">
+        <motion.nav
+          className={`flex items-center gap-0 rounded-full px-1 pr-1.5 h-11 transition-all duration-500 ${
+            scrolled || desktopExpanded
+              ? 'glass-strong shadow-lg shadow-black/20'
+              : 'bg-white/[0.04] backdrop-blur-sm'
+          }`}
+          onMouseEnter={() => setDesktopExpanded(true)}
+          onMouseLeave={() => setDesktopExpanded(false)}
+        >
+          {/* Logo */}
           <Link
             href="/"
-            className="font-serif text-xl md:text-2xl font-bold tracking-wider text-gold-gradient transition-opacity hover:opacity-80"
+            className="flex items-center justify-center w-11 h-11 rounded-full hover:bg-gold/10 transition-colors duration-300"
           >
-            NOIR
+            <span className="font-serif text-sm font-bold tracking-[0.15em] text-gold-gradient">
+              N
+            </span>
           </Link>
 
-          <ul className="hidden items-center gap-6 lg:flex">
-            {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                {link.href.startsWith('/') ? (
-                  <Link
-                    href={link.href}
-                    className="group relative text-[11px] font-medium uppercase tracking-[0.2em] text-foreground/60 transition-colors hover:text-gold"
-                  >
-                    {link.label}
-                    <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-gold to-gold-light transition-all duration-300 group-hover:w-full" />
-                  </Link>
-                ) : (
-                  <button
-                    onClick={() => scrollToSection(link.href)}
-                    className="group relative text-[11px] font-medium uppercase tracking-[0.2em] text-foreground/60 transition-colors hover:text-gold"
-                  >
-                    {link.label}
-                    <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-gold to-gold-light transition-all duration-300 group-hover:w-full" />
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-3">
-            <a
-              href={`https://wa.me/${BRAND.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full p-2 text-foreground/50 transition-all duration-300 hover:bg-gold/10 hover:text-gold"
-              aria-label="Contact via WhatsApp"
-            >
-              <RiWhatsappFill className="h-4 w-4 md:h-5 md:w-5" />
-            </a>
-
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="relative z-[60] flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full text-foreground/60 transition-colors hover:text-gold lg:hidden"
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            >
-              <AnimatePresence mode="wait">
-                {mobileOpen ? (
-                  <motion.span key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <HiOutlineXMark className="h-5 w-5 md:h-6 md:w-6" />
-                  </motion.span>
-                ) : (
-                  <motion.span key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <HiOutlineBars3 className="h-5 w-5 md:h-6 md:w-6" />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </button>
+          {/* ── Desktop: Expanding Link Bar ── */}
+          <div className="hidden lg:flex items-center">
+            <AnimatePresence>
+              {desktopExpanded && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 'auto', opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden flex items-center"
+                >
+                  <div className="h-4 w-px bg-gold/20 mx-2" />
+                  <div className="flex items-center gap-0.5 px-1">
+                    {NAV_LINKS.map((link, i) => (
+                      <motion.div
+                        key={link.label}
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25, delay: i * 0.03 }}
+                      >
+                        {link.href === '/' ? (
+                          <Link
+                            href="/"
+                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-gold transition-colors duration-200"
+                          >
+                            {link.label}
+                          </Link>
+                        ) : link.href.startsWith('/') ? (
+                          <Link
+                            href={link.href}
+                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-gold transition-colors duration-200"
+                          >
+                            {link.label}
+                          </Link>
+                        ) : (
+                          <button
+                            onClick={() => scrollToSection(link.href)}
+                            className="px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-foreground/40 hover:text-gold transition-colors duration-200"
+                          >
+                            {link.label}
+                          </button>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </nav>
 
-        <div
-          className={`h-px w-full transition-opacity duration-700 ${scrolled ? 'opacity-100' : 'opacity-0'}`}
-          style={{ background: 'linear-gradient(90deg, transparent 0%, #c9a96e 20%, #d4af37 50%, #c9a96e 80%, transparent 100%)' }}
-        />
+          {/* Separator */}
+          <div className="hidden lg:block h-4 w-px bg-gold/15 mx-1.5" />
+
+          {/* WhatsApp micro button */}
+          <a
+            href={`https://wa.me/${BRAND.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-8 h-8 rounded-full text-foreground/30 hover:text-[#25D366] transition-colors duration-300"
+            aria-label="WhatsApp"
+          >
+            <RiWhatsappFill className="w-3.5 h-3.5" />
+          </a>
+
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="relative z-[110] flex items-center justify-center w-8 h-8 rounded-full text-foreground/40 hover:text-gold transition-colors duration-300 lg:hidden"
+            aria-label="Menu"
+          >
+            <AnimatePresence mode="wait">
+              {mobileOpen ? (
+                <motion.span key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <HiOutlineXMark className="w-4 h-4" />
+                </motion.span>
+              ) : (
+                <motion.span key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <HiOutlineBars3 className="w-4 h-4" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </motion.nav>
       </motion.header>
 
+      {/* ── Mobile: Cinematic Fullscreen Overlay ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            key="mobile-menu"
+            key="mobile-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/95 backdrop-blur-xl lg:hidden"
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            className="fixed inset-0 z-[90] flex flex-col items-center justify-center lg:hidden"
           >
-            <nav className="flex flex-col items-center gap-5 overflow-y-auto max-h-[60vh] px-6">
+            {/* Dark backdrop */}
+            <div className="absolute inset-0 bg-[#050505]/98 backdrop-blur-2xl" />
+
+            {/* Decorative vertical lines */}
+            <div className="absolute top-0 left-[20%] w-px h-full bg-gradient-to-b from-transparent via-gold/5 to-transparent" />
+            <div className="absolute top-0 right-[20%] w-px h-full bg-gradient-to-b from-transparent via-gold/5 to-transparent" />
+
+            {/* Links */}
+            <nav className="relative z-10 flex flex-col items-center gap-1 px-6">
               {NAV_LINKS.map((link, i) => (
                 <motion.div
                   key={link.label}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.1 + i * 0.07,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                 >
-                  {link.href.startsWith('/') ? (
+                  {link.href === '/' ? (
+                    <Link
+                      href="/"
+                      onClick={() => setMobileOpen(false)}
+                      className="group flex items-center gap-4 py-2"
+                    >
+                      <span className="font-sans text-[10px] tracking-[0.3em] text-gold/20 font-mono">
+                        {NAV_NUMBERS[i]}
+                      </span>
+                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-gold transition-colors duration-400">
+                        {link.label}
+                      </span>
+                      <RiArrowRightUpLine className="w-4 h-4 text-gold/0 group-hover:text-gold/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
+                    </Link>
+                  ) : link.href.startsWith('/') ? (
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="font-serif text-3xl md:text-4xl font-medium tracking-[0.15em] text-foreground/80 transition-colors hover:text-gold"
+                      className="group flex items-center gap-4 py-2"
                     >
-                      {link.label}
+                      <span className="font-sans text-[10px] tracking-[0.3em] text-gold/20 font-mono">
+                        {NAV_NUMBERS[i]}
+                      </span>
+                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-gold transition-colors duration-400">
+                        {link.label}
+                      </span>
+                      <RiArrowRightUpLine className="w-4 h-4 text-gold/0 group-hover:text-gold/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
                     </Link>
                   ) : (
                     <button
                       onClick={() => scrollToSection(link.href)}
-                      className="font-serif text-3xl md:text-4xl font-medium tracking-[0.15em] text-foreground/80 transition-colors hover:text-gold"
+                      className="group flex items-center gap-4 py-2"
                     >
-                      {link.label}
+                      <span className="font-sans text-[10px] tracking-[0.3em] text-gold/20 font-mono">
+                        {NAV_NUMBERS[i]}
+                      </span>
+                      <span className="font-serif text-4xl md:text-5xl tracking-[0.08em] text-foreground/70 group-hover:text-gold transition-colors duration-400">
+                        {link.label}
+                      </span>
+                      <RiArrowRightUpLine className="w-4 h-4 text-gold/0 group-hover:text-gold/60 transition-all duration-400 translate-x-0 group-hover:translate-x-1" />
                     </button>
                   )}
                 </motion.div>
               ))}
             </nav>
 
+            {/* Bottom info */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="mt-8 flex items-center gap-3"
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="absolute bottom-10 left-0 right-0 flex flex-col items-center gap-3 px-6"
             >
-              <RiWhatsappFill className="h-4 w-4 text-gold" />
-              <a href={`https://wa.me/${BRAND.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-xs tracking-wider text-foreground/50 hover:text-gold transition-colors">
-                {BRAND.phone}
-              </a>
+              <div className="h-px w-16 bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+              <div className="flex items-center gap-3">
+                <RiWhatsappFill className="w-3.5 h-3.5 text-[#25D366]/60" />
+                <span className="font-sans text-[10px] tracking-[0.2em] text-foreground/30 uppercase">
+                  {BRAND.phone}
+                </span>
+              </div>
             </motion.div>
           </motion.div>
         )}

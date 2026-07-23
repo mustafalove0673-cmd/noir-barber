@@ -20,24 +20,20 @@ export default function Home() {
       <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <HeroSection />
 
-        <div id="services" className="scroll-mt-20" />
         <ServicesSection />
 
-        <div className="max-w-xs mx-auto px-6 my-10 md:my-14">
+        <div className="max-w-xs mx-auto px-6 py-10 md:py-14">
           <FloatingBookingPrompt />
         </div>
 
-        <div id="gallery" className="scroll-mt-20" />
         <GallerySection />
 
-        <div id="testimonials" className="scroll-mt-20" />
         <TestimonialsSection />
 
         <InstagramSection />
 
         <BookingCTA />
 
-        <div id="contact" className="scroll-mt-20" />
         <ContactSection />
 
         <Footer />
