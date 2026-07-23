@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RiWhatsappFill, RiPhoneFill } from 'react-icons/ri';
-import { HiOutlineEnvelope } from 'react-icons/hi';
+import { HiOutlineEnvelope } from 'react-icons/hi2';
 import { BRAND } from './data';
 
 const buttons = [
@@ -81,7 +81,7 @@ export default function StickyButtons() {
               }}
               whileHover={{ scale: 1.12 }}
               whileTap={{ scale: 0.92 }}
-              className={\`group relative flex items-center justify-center w-13 h-13 rounded-full shadow-lg transition-colors duration-300 \${btn.extraClass}\`}
+              className={`group relative flex items-center justify-center w-13 h-13 rounded-full shadow-lg transition-colors duration-300 ${btn.extraClass}`}
               style={btn.style}
             >
               <span className="absolute right-full mr-3 whitespace-nowrap px-3 py-1 rounded-md bg-foreground/90 text-background text-[11px] font-sans tracking-wider uppercase opacity-0 -translate-x-2 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0">

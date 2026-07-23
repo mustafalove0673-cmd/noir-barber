@@ -13,7 +13,7 @@ import {
   HiOutlinePhone,
   HiOutlineEnvelope,
   HiOutlineClock,
-} from 'react-icons/hi';
+} from 'react-icons/hi2';
 import { BRAND, FOOTER_LINKS } from './data';
 
 const marqueeText =
