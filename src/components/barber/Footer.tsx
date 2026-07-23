@@ -60,9 +60,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigate */}
+          {/* Navigasyon */}
           <div>
-            <h4 className="font-sans text-[9px] tracking-[0.3em] text-white/10 uppercase mb-3">Navigate</h4>
+            <h4 className="font-sans text-[9px] tracking-[0.3em] text-white/10 uppercase mb-3">Sayfalar</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.map((link) => (
                 <li key={link.label}>
@@ -109,9 +109,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Connect */}
+          {/* Bağlantı */}
           <div className="col-span-2 md:col-span-1">
-            <h4 className="font-sans text-[9px] tracking-[0.3em] text-white/10 uppercase mb-3">Connect</h4>
+            <h4 className="font-sans text-[9px] tracking-[0.3em] text-white/10 uppercase mb-3">Sosyal</h4>
             <a href={BRAND.instagramUrl} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2.5 py-2 border-b border-white/[0.04] group">
               <RiInstagramLine className="w-3.5 h-3.5 text-white/15 group-hover:text-gold/60 transition-colors" />
@@ -138,10 +138,10 @@ export default function Footer() {
         <div className="w-full h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
         <div className="max-w-5xl mx-auto px-6 md:px-12 py-4 flex flex-col sm:flex-row items-center justify-between gap-1">
           <p className="font-sans text-[10px] text-white/15">
-            &copy; {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+            &copy; {new Date().getFullYear()} {BRAND.name}. Tüm hakları saklıdır.
           </p>
           <p className="font-sans text-[9px] tracking-[0.2em] text-white/10 uppercase">
-            Designed with precision
+            Hassasiyetle tasarlandı
           </p>
         </div>
       </div>

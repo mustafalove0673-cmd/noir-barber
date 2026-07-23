@@ -141,7 +141,7 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 1.5, ease: 'easeOut' }}
             className="mt-5 text-[10px] font-medium uppercase tracking-[0.6em] text-white/25"
           >
-            WHERE PRECISION MEETS ARTISTRY
+            HASSASİYET VE SANAT BULUŞUR
           </motion.p>
 
           {/* CTA */}
@@ -157,7 +157,7 @@ export default function HeroSection() {
               rel="noopener noreferrer"
               className="inline-block border border-white/15 bg-white/[0.06] backdrop-blur-sm px-8 py-3 text-[11px] font-medium uppercase tracking-[0.3em] text-white/70 hover:text-gold hover:border-gold/30 transition-all duration-500"
             >
-              Book Your Experience
+              Deneyimini Yaşa
             </a>
           </motion.div>
         </motion.div>

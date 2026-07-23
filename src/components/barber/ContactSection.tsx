@@ -159,7 +159,7 @@ export default function ContactSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              GET IN TOUCH
+              İLETİŞİM
             </motion.h2>
             <motion.p
               className="font-sans text-[11px] text-white/20 tracking-wider"
@@ -168,7 +168,7 @@ export default function ContactSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              We&apos;d love to hear from you
+              Sizi duymaktan mutluluk duyarız
             </motion.p>
           </div>
 
@@ -182,10 +182,10 @@ export default function ContactSection() {
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0, y: -20, transition: { duration: 0.4 } }}
                   >
-                    <FloatingInput label="Name" name="name" value={form.name} onChange={handleChange} required delay={0} />
-                    <FloatingInput label="Email" name="email" type="email" value={form.email} onChange={handleChange} required delay={0.05} />
-                    <FloatingInput label="Phone" name="phone" type="tel" value={form.phone} onChange={handleChange} delay={0.1} />
-                    <FloatingInput label="Message" name="message" value={form.message} onChange={handleChange} required multiline delay={0.15} />
+                    <FloatingInput label="İsim" name="name" value={form.name} onChange={handleChange} required delay={0} />
+                    <FloatingInput label="E-posta" name="email" type="email" value={form.email} onChange={handleChange} required delay={0.05} />
+                    <FloatingInput label="Telefon" name="phone" type="tel" value={form.phone} onChange={handleChange} delay={0.1} />
+                    <FloatingInput label="Mesaj" name="message" value={form.message} onChange={handleChange} required multiline delay={0.15} />
 
                     <motion.button
                       type="submit"
@@ -193,14 +193,14 @@ export default function ContactSection() {
                       className="w-full py-3 bg-gold text-background font-sans text-[10px] font-semibold tracking-[0.25em] uppercase btn-shine transition-all duration-300 hover:shadow-gold disabled:opacity-50"
                       whileTap={{ scale: 0.98 }}
                     >
-                      {status === 'loading' ? 'SENDING...' : 'SEND MESSAGE'}
+                      {status === 'loading' ? 'GÖNDERİLİYOR...' : 'MESAJ GÖNDER'}
                     </motion.button>
 
                     <AnimatePresence>
                       {status === 'error' && (
                         <motion.p className="text-center text-red-400/60 text-xs font-sans"
                           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                          Something went wrong. Please try again.
+                          Bir şeyler ters gitti. Lütfen tekrar deneyin.
                         </motion.p>
                       )}
                     </AnimatePresence>
@@ -211,8 +211,8 @@ export default function ContactSection() {
                     animate={{ opacity: 1, scale: 1, transition: { duration: 0.5 } }}
                   >
                     <Checkmark />
-                    <p className="font-serif text-lg text-gold-gradient">Message sent</p>
-                    <p className="font-sans text-[11px] text-white/20">We&apos;ll get back to you soon</p>
+                    <p className="font-serif text-lg text-gold-gradient">Mesaj gönderildi</p>
+                    <p className="font-sans text-[11px] text-white/20">En kısa sürede dönüş yapacağız</p>
                   </motion.div>
                 )}
               </AnimatePresence>

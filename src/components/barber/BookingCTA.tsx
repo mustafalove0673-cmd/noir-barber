@@ -65,7 +65,7 @@ export default function BookingCTA() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="heading-display text-[clamp(1.5rem,4vw,3rem)] text-gold-gradient mb-3"
           >
-            YOUR NEXT CHAPTER BEGINS HERE
+            SONRAKİ BÖLÜMÜN BURADA BAŞLıyor
           </motion.h2>
 
           <motion.p
@@ -75,7 +75,7 @@ export default function BookingCTA() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="font-sans text-[11px] text-white/25 tracking-wider mb-8"
           >
-            Book through WhatsApp for priority scheduling
+            Öncelikli planlama için WhatsApp'tan bize ulaşın
           </motion.p>
 
           {/* CTAs */}
@@ -87,13 +87,13 @@ export default function BookingCTA() {
             className="flex flex-col sm:flex-row items-center gap-3"
           >
             <a
-              href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent("Hello NOIR BARBER, I'd like to book an appointment.")}`}
+              href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent("Merhaba NOIR BARBER, randevu almak istiyorum.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 px-7 py-3 bg-gold text-background font-sans text-[10px] font-semibold tracking-[0.25em] uppercase btn-shine transition-all duration-300 hover:shadow-gold"
             >
               <RiWhatsappFill className="w-4 h-4" />
-              <span>BOOK VIA WHATSAPP</span>
+              <span>WHATSAPP İLE RANDEVU AL</span>
             </a>
 
             <a
@@ -101,7 +101,7 @@ export default function BookingCTA() {
               className="inline-flex items-center gap-2.5 px-7 py-3 border border-white/12 text-white/50 font-sans text-[10px] font-semibold tracking-[0.25em] uppercase transition-all duration-300 hover:text-gold hover:border-gold/30"
             >
               <RiPhoneFill className="w-4 h-4" />
-              <span>CALL US</span>
+              <span>BİZİ ARA</span>
             </a>
           </motion.div>
         </div>
