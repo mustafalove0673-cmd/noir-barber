@@ -1,29 +1,26 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MessageCircle, Phone } from 'lucide-react'
+import { RiWhatsappFill, RiPhoneFill } from 'react-icons/ri'
 import { BRAND } from './data'
 
-/* ─── Marquee Divider ─── */
-function MarqueeDivider() {
+/* ─── Marquee Divider (exported for reuse as section divider) ─── */
+export function MarqueeDivider() {
   const text =
     'NOIR BARBER  •  LUXURY GROOMING  •  NEW YORK  •  PRECISION  •  ARTISTRY  •  EXCELLENCE  •  '
 
   return (
-    <div className="relative w-full overflow-hidden py-6">
-      {/* Gold lines above and below */}
+    <div className="relative w-full overflow-hidden py-4">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-
       <div className="flex whitespace-nowrap">
         <span className="animate-marquee inline-block text-gold/25 text-sm md:text-base font-sans tracking-[0.3em] uppercase select-none">
-          {/* Duplicate for seamless loop */}
           {text}
           {text}
           {text}
           {text}
         </span>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
     </div>
   )
 }
@@ -38,9 +35,7 @@ export function FloatingBookingPrompt() {
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className="relative"
     >
-      {/* Pulsing gold accent dot */}
       <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-gold animate-pulse-glow" />
-
       <div
         className="glass-strong rounded-2xl p-6 md:p-8 animate-pulse-glow"
         style={{
@@ -55,13 +50,13 @@ export function FloatingBookingPrompt() {
         </p>
         <a
           href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
-            `Hello NOIR BARBER, I'd like to book an appointment.`
+            "Hello NOIR BARBER, I'd like to book an appointment."
           )}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-gold text-background font-sans text-sm font-semibold tracking-wide uppercase btn-shine transition-all duration-300 hover:shadow-gold hover:scale-105"
         >
-          <MessageCircle size={16} />
+          <RiWhatsappFill className="w-4 h-4" />
           <span>Book via WhatsApp</span>
         </a>
       </div>
@@ -72,15 +67,13 @@ export function FloatingBookingPrompt() {
 /* ─── Main Booking Banner ─── */
 export default function BookingCTA() {
   return (
-    <section id="contact" className="relative w-full">
-      {/* ── Marquee Divider ── */}
+    <section id="booking-cta" className="relative w-full">
       <MarqueeDivider />
 
-      {/* ── Main CTA Banner ── */}
-      <div className="relative overflow-hidden py-24 md:py-32">
+      <div className="relative overflow-hidden py-16 md:py-20">
         {/* Diagonal gold line pattern background */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage: `repeating-linear-gradient(
               -45deg,
@@ -101,17 +94,15 @@ export default function BookingCTA() {
           }}
         />
 
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
+        <div className="relative max-w-3xl mx-auto px-6 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="heading-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gold-gradient mb-6"
+            className="heading-display text-2xl sm:text-3xl md:text-4xl text-gold-gradient mb-4"
           >
-            YOUR NEXT CHAPTER
-            <br />
-            BEGINS HERE
+            YOUR NEXT CHAPTER BEGINS HERE
           </motion.h2>
 
           <motion.p
@@ -119,43 +110,68 @@ export default function BookingCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-muted-foreground font-sans text-sm md:text-base tracking-wider mb-12"
+            className="text-muted-foreground font-sans text-sm tracking-wider mb-10"
           >
             Book through WhatsApp for priority scheduling
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons with angled / diamond-shaped edges */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-5"
           >
-            {/* WhatsApp CTA */}
+            {/* WhatsApp CTA — diamond-angled */}
             <motion.a
               href={`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(
-                `Hello NOIR BARBER, I'd like to book an appointment.`
+                "Hello NOIR BARBER, I'd like to book an appointment."
               )}`}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gold text-background font-sans text-sm font-semibold tracking-wider uppercase btn-shine transition-shadow duration-300 hover:shadow-gold"
+              className="relative inline-flex items-center gap-3 px-10 py-4 bg-gold text-background font-sans text-sm font-semibold tracking-wider uppercase btn-shine transition-shadow duration-300 hover:shadow-gold"
+              style={{
+                clipPath:
+                  'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)',
+              }}
             >
-              <MessageCircle size={18} />
+              <RiWhatsappFill className="w-5 h-5" />
               <span>BOOK VIA WHATSAPP</span>
             </motion.a>
 
-            {/* Call CTA */}
+            {/* Call CTA — diamond-angled outline */}
             <motion.a
               href={`tel:${BRAND.phone}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-gold/50 text-gold font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-300 hover:bg-gold/10 hover:border-gold hover:shadow-gold"
+              className="relative inline-flex items-center gap-3 px-10 py-4 text-gold font-sans text-sm font-semibold tracking-wider uppercase transition-all duration-300 hover:shadow-gold"
+              style={{
+                clipPath:
+                  'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)',
+              }}
             >
-              <Phone size={18} strokeWidth={1.5} />
-              <span>CALL US</span>
+              {/* Background layer for the border effect */}
+              <span
+                className="absolute inset-0 bg-gold/50"
+                style={{
+                  clipPath:
+                    'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)',
+                }}
+              />
+              <span
+                className="absolute inset-[1.5px] bg-[#0a0a0a]"
+                style={{
+                  clipPath:
+                    'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)',
+                }}
+              />
+              <span className="relative z-10 flex items-center gap-3">
+                <RiPhoneFill className="w-5 h-5" />
+                <span>CALL US</span>
+              </span>
             </motion.a>
           </motion.div>
         </div>

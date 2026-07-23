@@ -23,14 +23,14 @@ export default function Home() {
         <div id="services" className="scroll-mt-20" />
         <ServicesSection />
 
-        <div className="max-w-xs mx-auto px-6 my-16 md:my-24">
+        <div className="max-w-xs mx-auto px-6 my-10 md:my-14">
           <FloatingBookingPrompt />
         </div>
 
         <div id="gallery" className="scroll-mt-20" />
         <GallerySection />
 
-        <div id="about" className="scroll-mt-20" />
+        <div id="testimonials" className="scroll-mt-20" />
         <TestimonialsSection />
 
         <InstagramSection />
